@@ -8,6 +8,8 @@ import { AuthService } from 'src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from 'src/mailer/mailer.service';
 import { AppointmentsGateway } from './appointment.gateway';
+import { CourtService } from 'src/court/court.service';
+import { courtProvider } from 'src/court/court.provider';
 
 @Module({
   controllers: [AppointmentsController],
@@ -17,7 +19,9 @@ import { AppointmentsGateway } from './appointment.gateway';
     AuthService,
     JwtService,
     MailerService,
+    CourtService,
     AppointmentsGateway,
+    ...courtProvider,
     ...userProvider,
     ...appointmentProvider,
   ],

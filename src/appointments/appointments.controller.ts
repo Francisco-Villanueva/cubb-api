@@ -21,27 +21,36 @@ import { v4 as uuidv4 } from 'uuid';
 import { MailerService } from 'src/mailer/mailer.service';
 import { formatDate } from 'src/utils/format-date';
 import { AppointmentsGateway } from './appointment.gateway';
+import { CourtService } from 'src/court/court.service';
 @Controller('appointments')
 export class AppointmentsController {
   constructor(
     private readonly appointmentService: AppointmentsService,
-    private readonly userService: UserService,
+    private readonly courtService: CourtService,
     private authService: AuthService,
     private mailerSerivce: MailerService,
     private readonly appointmentsGateway: AppointmentsGateway,
   ) {}
   async getSlotsByDate(courtId: string, date: string, duration: number) {
     try {
-      const court = await this.userService.getById(courtId);
+      const court = await this.courtService.getById(courtId);
 
       if (!court) {
         throw new UnauthorizedException('La cancha ingresada no existe!.');
       }
       const appointments = await this.appointmentService.getByCourt(courtId);
       const selectedDate = new Date(date).getDay();
-      //TODO: AGREGAR WH DE LA CANCHA
+      //TODO: ADD WH TO COUT MODEL
       const availableTimes = getAvailableTimes(
-        [],
+        [
+          { day: 0, segments: [{ startime: '17:00', endTime: '23:00' }] },
+          { day: 1, segments: [{ startime: '17:00', endTime: '23:00' }] },
+          { day: 2, segments: [{ startime: '17:00', endTime: '23:00' }] },
+          { day: 3, segments: [{ startime: '17:00', endTime: '23:00' }] },
+          { day: 4, segments: [{ startime: '17:00', endTime: '23:00' }] },
+          { day: 5, segments: [{ startime: '17:00', endTime: '23:00' }] },
+          { day: 6, segments: [{ startime: '17:00', endTime: '23:00' }] },
+        ],
         selectedDate,
         duration,
         appointments.filter((appointment) => appointment.date === date),
@@ -121,7 +130,7 @@ export class AppointmentsController {
   @Post()
   async create(@Body() data: AppointmentDTO) {
     try {
-      const user = await this.userService.getById(data.UserId);
+      const user = await this.courtService.getById(data.UserId);
       if (!user) {
         throw new UnauthorizedException('User not found.');
       }
