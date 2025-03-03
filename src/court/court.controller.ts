@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { CourtService } from './court.service';
 import { CourtDTO } from './dto/court.dto';
+import { DEFAULT_WORKHOURS } from './constants/workours';
 
 @Controller('court')
 export class CourtController {
@@ -39,7 +40,17 @@ export class CourtController {
   @Post()
   async create(@Body() data: CourtDTO) {
     try {
-      const res = await this.courtService.create(data);
+      const court = await this.courtService.getBy({
+        key: 'name',
+        value: data.name,
+      });
+      if (court.length > 0) {
+        throw new NotFoundException('Ya existe una cancha con ese nombre!');
+      }
+      const res = await this.courtService.create({
+        ...data,
+        workhours: data.workhours ? data.workhours : DEFAULT_WORKHOURS,
+      });
 
       return res;
     } catch (error) {

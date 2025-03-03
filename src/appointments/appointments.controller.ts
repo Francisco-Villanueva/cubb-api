@@ -13,7 +13,7 @@ import { Request as ExpressRequest } from 'express';
 import { AppointmentsService } from './appointments.service';
 import { AppointmentDTO } from './dto/appointment.dto';
 import { UserService } from 'src/user/user.service';
-import { ISchedules } from 'src/core/types/workhours';
+import { IWorkhour } from 'src/core/types/workhours';
 import { getAvailableTimes } from './utlis';
 import { SlotAppointmentDTO } from './dto/slot.dto';
 import { AuthService } from 'src/auth/auth.service';
@@ -40,17 +40,8 @@ export class AppointmentsController {
       }
       const appointments = await this.appointmentService.getByCourt(courtId);
       const selectedDate = new Date(date).getDay();
-      //TODO: ADD WH TO COUT MODEL
       const availableTimes = getAvailableTimes(
-        [
-          { day: 0, segments: [{ startime: '17:00', endTime: '23:00' }] },
-          { day: 1, segments: [{ startime: '17:00', endTime: '23:00' }] },
-          { day: 2, segments: [{ startime: '17:00', endTime: '23:00' }] },
-          { day: 3, segments: [{ startime: '17:00', endTime: '23:00' }] },
-          { day: 4, segments: [{ startime: '17:00', endTime: '23:00' }] },
-          { day: 5, segments: [{ startime: '17:00', endTime: '23:00' }] },
-          { day: 6, segments: [{ startime: '17:00', endTime: '23:00' }] },
-        ],
+        court.workhours,
         selectedDate,
         duration,
         appointments.filter((appointment) => appointment.date === date),
@@ -79,7 +70,7 @@ export class AppointmentsController {
   }
   async validateAppointmentData(
     data: AppointmentDTO,
-    workhours: ISchedules[],
+    workhours: IWorkhour[],
     duration: number,
   ) {
     try {

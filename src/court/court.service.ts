@@ -12,6 +12,15 @@ export class CourtService {
   async getAll(): Promise<Court[]> {
     return this.courtModel.findAll();
   }
+  async getBy({
+    key,
+    value,
+  }: {
+    key: keyof Court;
+    value: string | number;
+  }): Promise<Court[]> {
+    return this.courtModel.findAll({ where: { [key]: value } });
+  }
 
   async getById(courtId: string): Promise<Court> {
     return this.courtModel.findByPk(courtId);

@@ -11,6 +11,7 @@ import { User } from 'src/user/schema/user.model';
 import { UserDTO } from 'src/user/dto/user.dto';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { IUser } from 'src/user/schema/user.zod';
 @Injectable()
 export class AuthService {
   constructor(
@@ -60,20 +61,15 @@ export class AuthService {
     payload: jwt.JwtPayload;
     secret: string;
   }): string {
-    return jwt.sign(payload, secret, { noTimestamp: true });
+    return jwt.sign(payload, secret, { expiresIn: '7d' });
   }
 
   public async generateJWT(user: User): Promise<IAuthResponse> {
-    const getUser = await this.userService.getById(user.id);
+    const userResponse = await this.userService.getById(user.id);
 
-    const payload: IPayloadToken = {
-      id: getUser.id,
-      name: getUser.name,
-      email: getUser.email,
-      lastName: getUser.lastName,
-      role: getUser.role,
-      userName: getUser.userName,
-      membership_status: getUser.membership_status,
+    const payload: IUser = {
+      ...userResponse.dataValues,
+      password: '',
     };
 
     return {
@@ -87,7 +83,7 @@ export class AuthService {
 
   public async me(request: Request) {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    if (!token) throw new UnauthorizedException();
+    if (!token) throw new UnauthorizedException('Missing Token !!');
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWTKEY,

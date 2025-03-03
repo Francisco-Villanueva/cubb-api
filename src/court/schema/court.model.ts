@@ -1,6 +1,6 @@
 import { Table, Column, DataType } from 'sequelize-typescript';
 import { BaseModel } from 'src/core/database/schema/base.model';
-import { ISchedules } from 'src/core/types/workhours';
+import { IWorkhour } from 'src/core/types/workhours';
 @Table
 export class Court extends BaseModel<Court> {
   @Column
@@ -9,5 +9,5 @@ export class Court extends BaseModel<Court> {
     type: DataType.ARRAY(DataType.JSON),
     defaultValue: [],
   })
-  schedules: ISchedules[];
+  workhours: IWorkhour[];
 }

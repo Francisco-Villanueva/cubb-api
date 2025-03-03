@@ -1,4 +1,4 @@
-import { ISchedules } from 'src/core/types/workhours';
+import { IWorkhour } from 'src/core/types/workhours';
 import { AppointmentDTO } from '../dto/appointment.dto';
 import { UnauthorizedException } from '@nestjs/common';
 import { Appointment } from '../schema/appointment.model';
@@ -32,7 +32,7 @@ const isTimeSlotAvailable = (startTime, duration, appointments) => {
   });
 };
 export const getAvailableTimes = (
-  workhours: ISchedules[],
+  workhours: IWorkhour[],
   selectedDay: number,
   duration: number,
   appointments: Appointment[],
@@ -66,7 +66,7 @@ export const getAvailableTimes = (
 
 export async function validateAppointmentData(
   data: AppointmentDTO,
-  workhours: ISchedules[],
+  workhours: IWorkhour[],
   duration: number,
 ) {
   const selectedWorkhours = workhours.find(

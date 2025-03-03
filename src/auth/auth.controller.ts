@@ -12,13 +12,14 @@ import { UserService } from 'src/user/user.service';
 import { v4 as uuidv4 } from 'uuid';
 import { MailerService } from 'src/mailer/mailer.service';
 import { Request as ExpressRequest } from 'express';
+import { TeamService } from 'src/team/team.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
-    private readonly mailerSerivce: MailerService,
+    private readonly teamService: TeamService,
   ) {}
 
   @Post('login')
@@ -71,7 +72,16 @@ export class AuthController {
         confirmationTokenExpiresAt: expiration,
         fullName: `${user.name} ${user.lastName}`,
       };
-      const newUser = this.authService.register({ ...data, role: 'ADMIN' });
+      if (data.TeamId) {
+        const team = await this.teamService.getById(data.TeamId);
+        if (!team) {
+          throw new UnauthorizedException('El equipo ingresado no existe!');
+        }
+        data.role = 'CLUB';
+      } else {
+        data.role = 'ADMIN';
+      }
+      const newUser = this.authService.register({ ...data });
 
       // await this.mailerSerivce.sendEmail(user.email, {
       //   name: `${user.name} ${user.lastName}`,

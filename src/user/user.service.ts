@@ -17,7 +17,7 @@ export class UserService {
   }
 
   async getById(id: string): Promise<User> {
-    return this.UserModel.findOne({
+    return await this.UserModel.findOne({
       where: { id },
     });
   }
