@@ -10,13 +10,13 @@ export class User extends BaseModel<User> {
     allowNull: false,
   })
   role: Role;
-  @Column
+  @Column({ allowNull: true })
   fullName: string;
-  @Column
+  @Column({ allowNull: true })
   email: string;
   @Column
   userName: string;
-  @Column
+  @Column({ allowNull: true })
   phone: string;
   @Column
   password: string;

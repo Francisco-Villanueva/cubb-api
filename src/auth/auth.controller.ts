@@ -45,12 +45,16 @@ export class AuthController {
   @Post('register')
   async register(@Body() body: UserDTO) {
     try {
-      const validateEmail = await this.userService.findBy({
-        key: 'email',
-        value: body.email,
-      });
-      if (validateEmail) {
-        throw new UnauthorizedException('El email ya se encuentra registrado.');
+      if (body.email) {
+        const validateEmail = await this.userService.findBy({
+          key: 'email',
+          value: body.email,
+        });
+        if (validateEmail) {
+          throw new UnauthorizedException(
+            'El email ya se encuentra registrado.',
+          );
+        }
       }
       const validateUserName = await this.userService.findBy({
         key: 'userName',
@@ -73,18 +77,12 @@ export class AuthController {
         fullName: `${body.name} ${body.lastName}`,
       };
 
-      if (body.role) {
-        if (body.role === 'ADMIN' || body.role === 'TEAM_ADMIN') {
-          data.role = body.role;
-        }
-      }
-
-      if (data.TeamId) {
+      if (data.TeamId && data.TeamId !== '') {
+        console.log('buscar TeamId: ', data.TeamId);
         const team = await this.teamService.getById(data.TeamId);
         if (!team) {
           throw new UnauthorizedException('El equipo ingresado no existe!');
         }
-        data.role = 'CLUB';
       }
       const newUser = this.authService.register({ ...data });
 
