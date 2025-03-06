@@ -9,6 +9,7 @@ import { MailerModule } from './mailer/mailer.module';
 import { CourtModule } from './court/court.module';
 import { TeamModule } from './team/team.module';
 import { AppointmentsModule } from './appointments/appointments.module';
+import { UploadModule } from './upload/upload.module';
 dotenv.config();
 @Module({
   imports: [
@@ -19,6 +20,7 @@ dotenv.config();
     CourtModule,
     TeamModule,
     AppointmentsModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

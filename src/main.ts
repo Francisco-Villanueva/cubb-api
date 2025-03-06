@@ -23,7 +23,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('ProSeM API')
-    .setDescription('API documentation for ProSeM')
+    .setDescription('API documentation for CUBB')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
