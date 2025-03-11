@@ -34,7 +34,6 @@ export class AppointmentsController {
   async getSlotsByDate(courtId: string, date: string, duration: number) {
     try {
       const court = await this.courtService.getById(courtId);
-
       if (!court) {
         throw new UnauthorizedException('La cancha ingresada no existe!.');
       }
@@ -83,7 +82,7 @@ export class AppointmentsController {
       for (const segment of selectedWorkhours.segments) {
         if (data.time >= segment.startime && data.time <= segment.endTime) {
           const { availableTimes } = await this.getSlotsByDate(
-            data.UserId,
+            data.CourtId,
             data.date,
             duration,
           );
@@ -121,22 +120,17 @@ export class AppointmentsController {
   @Post()
   async create(@Body() data: AppointmentDTO) {
     try {
-      const user = await this.courtService.getById(data.UserId);
-      if (!user) {
-        throw new UnauthorizedException('User not found.');
+      const court = await this.courtService.getById(data.CourtId);
+      if (!court) {
+        throw new UnauthorizedException('Court not found.');
       }
-      //   await this.validateAppointmentData(
-      //     data,
-      //     user.workhours,
-      //     service.duration,
-      //   );
-
+      await this.validateAppointmentData(data, court.workhours, data.duration);
       //EN ESTE PUNTO LOS DATOS INGRESADOS PARA EL USUARIO, SERVICIO Y HORARIO, SON VALIDOS.
 
       // Ahora tenemos que validar que no haya un turno con esa misma data!
       const appointment = await this.appointmentService.findByAppointmentInfo({
         date: data.date,
-        UserId: data.UserId,
+        CourtId: data.CourtId,
         time: data.time,
       });
       if (appointment && !appointment.canceled) {
@@ -147,17 +141,15 @@ export class AppointmentsController {
 
       //EN ESTE PUNTO: Los datos estan OK y se puede sacar el turno.
       const cancelationToken = uuidv4();
-      //   const newAppointment = await this.appointmentService.create({
-      //     ...data,
-      //     duration: service.duration,
-      //     canceled: false,
-      //     CustomerId: customer.id,
-      //     tenantName: user.tenantName,
-      //     companyId: user.CompanyId,
-      //     cancelationToken,
-      //     confirmed: false,
-      //     price: service.price,
-      //   });
+      const newAppointment = await this.appointmentService.create({
+        ...data,
+        duration: data.duration,
+        canceled: false,
+        CourtId: court.id,
+        cancelationToken,
+        confirmed: false,
+        price: data.price,
+      });
       // //   await this.mailerSerivce.sendAppointmentdata(data.email, {
       // //     cancelationToken,
       // //     day: formatDate(data.date.toString()),
@@ -167,9 +159,9 @@ export class AppointmentsController {
       // //     time: data.time,
       // //     userName: `${user.name}, ${user.lastName}`,
       // //   });
-      //   return newAppointment;
+      return newAppointment;
 
-      return 'Turno agendado';
+      // return 'Turno agendado';
     } catch (error) {
       throw error;
     }

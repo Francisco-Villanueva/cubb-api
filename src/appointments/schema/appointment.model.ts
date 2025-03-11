@@ -5,12 +5,6 @@ export class Appointment extends BaseModel<Appointment> {
   @Column
   name: string;
   @Column
-  lastName: string;
-  @Column
-  phone: string;
-  @Column
-  email: string;
-  @Column
   date: string;
   @Column
   time: string;

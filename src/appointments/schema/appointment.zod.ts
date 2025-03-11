@@ -3,12 +3,9 @@ const isoStringRegex =
   /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|([+-]\d{2}:\d{2}))$/;
 
 export const AppointmentZodSchema = z.object({
-  name: z.string().min(1),
-  lastName: z.string().min(1),
-  email: z.string().email(),
-  phone: z.string().min(1),
+  name: z.string().optional(),
   time: z.string().min(1),
-  price: z.number().optional(),
+  price: z.number(),
   confirmed: z.boolean().optional(),
   payment_method: z.string().optional(),
   cancelationToken: z.string().optional(),
@@ -20,11 +17,8 @@ export const AppointmentZodSchema = z.object({
       message:
         'Date must be a valid ISO 8601 string including time and timezone',
     }),
-  UserId: z.string().min(1),
-  ServiceId: z.string().min(1),
-  CustomerId: z.string().optional(),
-  tenantName: z.string().optional(),
-  companyId: z.string().optional(),
+  CourtId: z.string().min(1),
+  TeamId: z.string().min(1),
   canceled: z.boolean().optional(),
 });
 

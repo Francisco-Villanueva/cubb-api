@@ -10,7 +10,7 @@ export class CourtService {
   ) {}
 
   async getAll(): Promise<Court[]> {
-    return this.courtModel.findAll();
+    return this.courtModel.findAll({ order: [['createdAt', 'ASC']] });
   }
   async getBy({
     key,
@@ -23,7 +23,7 @@ export class CourtService {
   }
 
   async getById(courtId: string): Promise<Court> {
-    return this.courtModel.findByPk(courtId);
+    return this.courtModel.findOne({ where: { id: courtId } });
   }
   async create(data: CourtDTO): Promise<Court> {
     return this.courtModel.create(data);

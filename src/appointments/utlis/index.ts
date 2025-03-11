@@ -78,7 +78,7 @@ export async function validateAppointmentData(
   for (const segment of selectedWorkhours.segments) {
     if (data.time >= segment.startime && data.time <= segment.endTime) {
       const hoursList = await this.getSlotsByDate(
-        data.UserId,
+        data.CourtId,
         data.date,
         duration,
       );

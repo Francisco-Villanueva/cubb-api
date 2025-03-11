@@ -29,7 +29,7 @@ export class AppointmentsService {
   }
 
   async findByAppointmentInfo(data: {
-    UserId: string;
+    CourtId: string;
     time: string;
     date: string;
   }) {
