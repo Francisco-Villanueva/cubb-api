@@ -37,21 +37,23 @@ export class AppointmentsController {
       if (!court) {
         throw new UnauthorizedException('La cancha ingresada no existe!.');
       }
-      const appointments = await this.appointmentService.getByCourt(courtId);
+      const appointmentsByCourt =
+        await this.appointmentService.getByCourt(courtId);
       const selectedDate = new Date(date).getDay();
       const availableTimes = getAvailableTimes(
         court.workhours,
         selectedDate,
         duration,
-        appointments.filter((appointment) => appointment.date === date),
+        appointmentsByCourt.filter((appointment) => appointment.date === date),
       );
 
       const isAvaialable = (hs: string) => {
-        if (appointments.filter((app) => app.time === hs).length === 0)
+        if (appointmentsByCourt.filter((app) => app.time === hs).length === 0)
           return true;
 
-        return !appointments
+        return !appointmentsByCourt
           .filter((app) => app.time === hs)
+          .filter((app) => app.date === date)
           .some((app) => !app.canceled);
       };
       const res = availableTimes.map((hs) => ({
@@ -102,6 +104,17 @@ export class AppointmentsController {
   async getAll() {
     try {
       return await this.appointmentService.getAll();
+    } catch (error) {
+      throw error;
+    }
+  }
+  @Post('get-by-courts')
+  async getByCourt(
+    @Body()
+    { courtId }: { courtId: string },
+  ) {
+    try {
+      return await this.appointmentService.getByCourt(courtId);
     } catch (error) {
       throw error;
     }

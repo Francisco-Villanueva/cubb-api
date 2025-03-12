@@ -37,10 +37,10 @@ export class AppointmentsService {
   }
 
   async getByCourt(CourtId: string) {
-    return this.AppointmentModel.findAll({ where: { CourtId } });
+    return await this.AppointmentModel.findAll({ where: { CourtId } });
   }
   async getByTeam(TeamId: string) {
-    return this.AppointmentModel.findAll({ where: { TeamId } });
+    return await this.AppointmentModel.findAll({ where: { TeamId } });
   }
   async cancelAppointment(appointment: Appointment) {
     appointment.canceled = true;
